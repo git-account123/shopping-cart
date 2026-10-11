@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body{
+            width: 100%;
+            height:100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap:30px;
+            font-size: 1.2rem;
+        }
+
+        .wrapper{
+            min-width:600px;
+            height:auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            
+        }
+        #addDiv{
+            width: 100%;
+            height:auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            
+        }
+
+        #add{
+              background-color: rgba(0, 0, 255, 0.522);
+              color: white;
+              padding: 9px 11px;
+              border-radius: 12px;
+              font-size: 1.2rem;
+        }
+
+        #list{
+            margin: 12px;
+            max-width: 100%;
+            height:auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: self-start;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .place{
+            width: 100%;
+            height: 40px;
+            border-left: 2px solid green;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+            gap:20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shopping cart</h1>
+     <div class="wrapper">
+        <div id="addDiv">
+            Enter the product:
+            <input type="text" name="prod" id="prod" value="carrot">
+            Price:
+            <input type="number" name="price" id="price" value="100">
+            <button id="add">Add</button>
+        </div>
+        <ul id="list"></ul>
+
+     </div>
+     <script>
+        const name = document.querySelector('#prod');
+        const price = document.querySelector('#price');
+        const ulEle = document.querySelector('#list');
+        const btnEle = document.querySelector('#add');
+
+        let editingItem = null;
+
+        function addToCart() {
+            const product = name.value.trim();
+            const numprice = price.value;
+
+            if (!product || numprice === '') return;
+
+            if (editingItem) {
+                editingItem.querySelector('.product').textContent = product;
+                editingItem.querySelector('.item-price').textContent = numprice;
+                editingItem = null;
+                btnEle.textContent = 'Add';
+            } else {
+                const liEle = document.createElement('li');
+                liEle.classList.add('place');
+
+                const productEle = document.createElement('span');
+                productEle.classList.add('product');
+                productEle.textContent = product;
+
+                const priceEle = document.createElement('span');
+                priceEle.classList.add('item-price');
+                priceEle.textContent = numprice;
+
+                const editBtn = document.createElement('button');
+                editBtn.type = 'button';
+                editBtn.textContent = 'Edit';
+                editBtn.onclick = function () {
+                    name.value = productEle.textContent;
+                    price.value = priceEle.textContent;
+                    editingItem = liEle;
+                    btnEle.textContent = 'Save';
+                };
+
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.textContent = 'Remove item';
+                delBtn.onclick = function () {
+                    if (editingItem === liEle) {
+                        editingItem = null;
+                        btnEle.textContent = 'Add';
+                        name.value = '';
+                        price.value = '';
+                    }
+                    liEle.remove();
+                };
+
+                liEle.append(productEle, priceEle, editBtn, delBtn);
+                ulEle.appendChild(liEle);
+            }
+
+            name.value = '';
+            price.value = '';
+        }
+ 
+
+        btnEle.addEventListener('click', addToCart);
+     </script>
+</body>
+</html>
